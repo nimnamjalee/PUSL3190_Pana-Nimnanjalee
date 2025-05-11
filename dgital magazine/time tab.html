@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Magazine Timetable</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: #fdf6f0;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #ff69b4;
+    }
+    .timetable {
+      display: grid;
+      grid-template-columns: 100px repeat(7, 1fr);
+      gap: 5px;
+      max-width: 100%;
+      overflow-x: auto;
+      background: #fff0f5;
+      padding: 10px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px #ffc0cb;
+    }
+    .day, .time {
+      background: #fff;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 10px;
+      color: #000;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .cell {
+      background: #fff;
+      min-height: 60px;
+      border: 1px solid #ffd1dc;
+      border-radius: 10px;
+      padding: 5px;
+      position: relative;
+    }
+    .cell input {
+      width: 50%;
+      border: none;
+      background: transparent;
+      font-family: 'Comic Neue', cursive;
+      font-size: 14px;
+    }
+    .stickers {
+      margin: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sticker {
+      font-size: 24px;
+      margin: 5px;
+      cursor: grab;
+      display: inline-block;
+    }
+    #downloadBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #colorPicker {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    #backBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .timeInput {
+      width: 80%;
+      padding: 5px;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌈 My Cute Timetable 🌸</h1>
+  <div class="stickers">
+    <span class="sticker" draggable="true" id="sticker1">🦄</span>
+    <span class="sticker" draggable="true" id="sticker2">🎨</span>
+    <span class="sticker" draggable="true" id="sticker3">📚</span>
+    <span class="sticker" draggable="true" id="sticker4">🍭</span>
+    <span class="sticker" draggable="true" id="sticker5">🌸</span>
+  </div>
+  <div class="timetable" id="timetable">
+    <div class="day time">Time</div>
+    <div class="day">Monday</div>
+    <div class="day">Tuesday</div>
+    <div class="day">Wednesday</div>
+    <div class="day">Thursday</div>
+    <div class="day">Friday</div>
+    <div class="day">Saturday</div>
+    <div class="day">Sunday</div>
+  </div>
+  <button id="addSlotBtn">Add Slot</button>
+  <button id="downloadBtn">Download as PNG 📥</button>
+  <button id="colorPicker">Change Color</button>
+  <button id="backBtn" onclick="window.location.href='index.html'">Back</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const times = ["9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "1:00", "1:30"];
+    const timetable = document.getElementById("timetable");
+
+    // Function to build the timetable with editable time and task input
+    function buildTimetable() {
+      timetable.innerHTML = ` 
+        <div class="day time">Time</div>
+        <div class="day">Monday</div>
+        <div class="day">Tuesday</div>
+        <div class="day">Wednesday</div>
+        <div class="day">Thursday</div>
+        <div class="day">Friday</div>
+        <div class="day">Saturday</div>
+        <div class="day">Sunday</div>
+      `;
+
+      times.forEach(time => {
+        const timeCell = document.createElement("div");
+        timeCell.className = "day time";
+        timeCell.innerHTML = `<input type="text" value="${time}" class="timeInput" />`;
+        timetable.appendChild(timeCell);
+
+        for (let i = 0; i < 7; i++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.setAttribute("ondrop", "drop(event)");
+          cell.setAttribute("ondragover", "allowDrop(event)");
+
+          const input = document.createElement("input");
+          input.placeholder = "Add task...";
+          cell.appendChild(input);
+
+          timetable.appendChild(cell);
+        }
+      });
+    }
+
+    // Drag start event handler
+    document.querySelectorAll('.sticker').forEach(sticker => {
+      sticker.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text', e.target.id);
+      });
+    });
+
+    // Allow drop event handler
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    // Drop event handler
+    function drop(e) {
+      e.preventDefault();
+      const stickerId = e.dataTransfer.getData("text");
+      const sticker = document.getElementById(stickerId);
+      const cell = e.target;
+
+      if (cell.classList.contains('cell')) {
+        const newSticker = sticker.cloneNode(true); // Clone the sticker
+        cell.appendChild(newSticker);
+        newSticker.setAttribute('draggable', 'true'); // Re-enable dragging
+        newSticker.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text', e.target.id);
+        });
+      }
+    }
+
+    // Function to add a new time slot
+    document.getElementById("addSlotBtn").addEventListener("click", () => {
+      const newTime = prompt("Enter the new time slot (e.g., 2:30):");
+      if (newTime) {
+        times.push(newTime);
+        buildTimetable();
+      }
+    });
+
+    // Change color
+    document.getElementById("colorPicker").addEventListener("click", () => {
+      const color = prompt("Enter the new color (e.g., #ff69b4):");
+      if (color) {
+        document.querySelector(".timetable").style.background = color;
+      }
+    });
+
+    // Download timetable as PNG
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      html2canvas(document.getElementById("timetable")).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "MyCuteTimetable.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    });
+
+    // Initialize timetable
+    buildTimetable();
+  </script>
+</body>
+</html>

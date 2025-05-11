@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Ahead Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        .game-container {
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .shadow-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .options-container {
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Choose the Animal that Matches the Shadow</h1>
+        <div class="shadow-container">
+            <img id="shadow" src="shadow.png" alt="Animal Shadow">
+        </div>
+        <div class="options-container">
+            <button class="option" data-animal="lion">Lion</button>
+            <button class="option" data-animal="elephant">Elephant</button>
+            <button class="option" data-animal="giraffe">Giraffe</button>
+            <button class="option" data-animal="zebra">Zebra</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const options = document.querySelectorAll('.option');
+        const result = document.getElementById('result');
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const selectedAnimal = option.getAttribute('data-animal');
+                if (selectedAnimal === 'lion') {
+                    result.textContent = 'Correct! It is a Lion.';
+                } else {
+                    result.textContent = 'Wrong! Try again.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

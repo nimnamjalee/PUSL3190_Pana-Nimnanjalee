@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pattern Matching Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdf6e3;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .game-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .slot, .item {
+      width: 80px;
+      height: 80px;
+      margin: 10px;
+      border: 2px dashed #ccc;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      border-radius: 10px;
+    }
+
+    .item {
+      border: 2px solid #4CAF50;
+      cursor: move;
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+    }
+
+    .item.dragging {
+      opacity: 0.5;
+    }
+
+    .slot.filled {
+      border-style: solid;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #007700;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Complete the Pattern</h1>
+
+  <div class="game-container" id="pattern">
+    <div class="slot" data-correct="flower"></div>
+    <div class="slot" data-correct="duck"></div>
+    <div class="slot" data-correct="fish"></div>
+    <div class="slot" data-correct="duck"></div>
+    <div class="slot" data-correct="flower"></div>
+  </div>
+
+  <h2>Drag and Drop the Right Items</h2>
+  <div class="game-container">
+    <div class="item" draggable="true" data-name="duck">
+      <img src="https://i.imgur.com/4iRbsYb.png" alt="Duck">
+    </div>
+    <div class="item" draggable="true" data-name="fish">
+      <img src="https://i.imgur.com/lIWXv0A.png" alt="Fish">
+    </div>
+    <div class="item" draggable="true" data-name="flower">
+      <img src="https://i.imgur.com/x2uTFNm.png" alt="Flower">
+    </div>
+  </div>
+
+  <button onclick="checkPattern()">Check Answer</button>
+  <div id="result"></div>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const slots = document.querySelectorAll('.slot');
+
+    let draggedItem = null;
+
+    items.forEach(item => {
+      item.addEventListener('dragstart', () => {
+        draggedItem = item;
+        item.classList.add('dragging');
+      });
+
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+      });
+    });
+
+    slots.forEach(slot => {
+      slot.addEventListener('dragover', e => e.preventDefault());
+
+      slot.addEventListener('drop', () => {
+        if (!slot.hasChildNodes()) {
+          slot.appendChild(draggedItem.cloneNode(true));
+          slot.classList.add('filled');
+        }
+      });
+    });
+
+    function checkPattern() {
+      let correct = 0;
+      slots.forEach(slot => {
+        const item = slot.querySelector('.item');
+        if (item && item.getAttribute('data-name') === slot.getAttribute('data-correct')) {
+          correct++;
+        }
+      });
+
+      const result = document.getElementById('result');
+      if (correct === slots.length) {
+        result.textContent = '🎉 Well done! You matched the pattern correctly!';
+      } else {
+        result.textContent = '❌ Some items are incorrect. Try again!';
+      }
+    }
+  </script>
+</body>
+</html>

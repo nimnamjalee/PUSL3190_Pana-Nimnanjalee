@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Magic Digital Watch</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f9f9f9; /* Light Mode Very Light */
+      overflow: hidden;
+      position: relative;
+      transition: background-color 0.3s ease;
+    }
+
+    .watch-container {
+      width: 320px;
+      height: 640px;
+      border: 5px solid #333;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      z-index: 2;
+    }
+
+    .time {
+      font-size: 3em;
+      margin-top: 60px;
+    }
+
+    .date {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+
+    .alarm-display {
+      margin-top: 10px;
+      font-size: 1em;
+      color: #ffdd57;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    .controls label,
+    .controls button {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .controls input[type="color"] {
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dark {
+      background: #111;
+      color: #eee;
+    }
+
+    .slideshow {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 40px;
+      opacity: 0.6;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(0, 183, 255, 0.4);
+      transform: scale(0);
+      animation: ripple-effect 0.6s ease-out forwards;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @keyframes ripple-effect {
+      to {
+        transform: scale(5);
+        opacity: 0;
+      }
+    }
+
+    #stopAlarmBtn {
+      display: none;
+      margin-top: 10px;
+      background: #ff5555;
+    }
+
+    .bubble-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: rise 8s linear infinite;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-1000px) scale(1);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="watch-container">
+    <img id="slideshow" class="slideshow" src="quiz.jpeg" alt="bg" />
+    <div class="screen" id="screen">
+      <div class="time" id="time">00:00:00</div>
+      <div class="date" id="date">Date</div>
+      <div class="alarm-display" id="alarmDisplay">Alarm: Not set</div>
+      <div class="controls">
+        <label>
+          🌈 Background:
+          <input type="color" id="bgColor" />
+        </label>
+        <button id="modeBtn" onclick="toggleMode()">🌞 Light Mode</button>
+        <button id="formatBtn" onclick="toggleFormat()">🕓 12-Hour Format</button>
+        <button onclick="setAlarm()">⏰ Set Alarm</button>
+        <button id="stopAlarmBtn" onclick="stopAlarm()">🛑 Stop Alarm</button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="tick-sound" src="https://www.soundjay.com/clock/sounds/clock-ticking-1.mp3" preload="auto"></audio>
+  <audio id="alarm-sound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto" loop></audio>
+  <audio id="bubble-sound" src="https://www.soundjay.com/button/sounds/button-16.mp3" preload="auto"></audio>
+
+  <div class="bubble-container" id="bubbleContainer"></div>
+
+  <script>
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+    const tick = document.getElementById('tick-sound');
+    const alarmSound = document.getElementById('alarm-sound');
+    const bubbleSound = document.getElementById('bubble-sound');
+    const alarmDisplay = document.getElementById('alarmDisplay');
+    const stopAlarmBtn = document.getElementById('stopAlarmBtn');
+    const bgInput = document.getElementById('bgColor');
+    const slideshow = document.getElementById('slideshow');
+    const modeBtn = document.getElementById('modeBtn');
+    const formatBtn = document.getElementById('formatBtn');
+
+    let is24Hour = true;
+    let alarmTime = null;
+    let isAlarmRinging = false;
+
+    const images = ["quiz.jpeg", "song.jpeg", "puz.jpeg"]; // Start with quiz.jpeg
+    let imgIndex = 0;
+    slideshow.src = images[imgIndex]; // Ensure it loads on start
+
+    function updateTime() {
+      const now = new Date();
+      let hrs = now.getHours();
+      let min = now.getMinutes();
+      let sec = now.getSeconds();
+      let ampm = '';
+
+      const rawHrs = hrs;
+
+      if (!is24Hour) {
+        ampm = hrs >= 12 ? 'PM' : 'AM';
+        hrs = hrs % 12 || 12; // Convert 24-hour time to 12-hour time
+      }
+
+      timeEl.textContent = `${pad(hrs)}:${pad(min)}:${pad(sec)} ${ampm}`;
+      dateEl.textContent = now.toDateString();
+
+      tick.play();
+
+      const current = `${pad(rawHrs)}:${pad(min)}`;
+      if (alarmTime && current === alarmTime && !isAlarmRinging) {
+        alarmSound.play();
+        isAlarmRinging = true;
+        stopAlarmBtn.style.display = "inline-block";
+      }
+    }
+
+    function pad(num) {
+      return num.toString().padStart(2, '0');
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      modeBtn.textContent = isDark ? "🌞 Light Mode" : "🌙 Dark Mode";
+    }
+
+    function toggleFormat() {
+      is24Hour = !is24Hour;
+      formatBtn.textContent = is24Hour ? "🕓 12-Hour Format" : "🕘 24-Hour Format";
+    }
+
+    function setAlarm() {
+      let input = prompt("Set alarm time (HH:MM 24h):", "08:00");
+      if (input && /^\d{2}:\d{2}$/.test(input)) {
+        alarmTime = input;
+        alarmDisplay.textContent = "Alarm: " + input;
+        alert(`Alarm set for ${input}`);
+      } else {
+        alert("Invalid format. Please use HH:MM in 24-hour format.");
+      }
+    }
+
+    function stopAlarm() {
+      alarmSound.pause();
+      alarmSound.currentTime = 0;
+      isAlarmRinging = false;
+      stopAlarmBtn.style.display = "none";
+      bubbleSound.play();
+    }
+
+    bgInput.addEventListener('input', function () {
+      document.body.style.background = this.value;
+    });
+
+    setInterval(() => {
+      imgIndex = (imgIndex + 1) % images.length;
+      slideshow.src = images[imgIndex];
+    }, 5000);
+
+    document.body.addEventListener('click', function (e) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = `${e.pageX - 25}px`;
+      ripple.style.top = `${e.pageY - 25}px`;
+      ripple.style.width = ripple.style.height = '50px';
+
+      document.body.appendChild(ripple);
+      bubbleSound.play();
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 600);
+    });
+
+    function createBubble() {
+      const container = document.getElementById('bubbleContainer');
+      const bubble = document.createElement('div');
+      const size = Math.random() * 12 + 8;
+
+      bubble.classList.add('bubble');
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.animationDuration = `${5 + Math.random() * 5}s`;
+
+      container.appendChild(bubble);
+
+      setTimeout(() => {
+        bubble.remove();
+      }, 10000);
+    }
+
+    setInterval(createBubble, 300);
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+</body>
+</html>

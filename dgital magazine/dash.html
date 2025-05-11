@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Magazine Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #fef6f0;
+    }
+
+    header {
+      background-color: #ffb6b9;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 2rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      height: 100vh;
+    }
+
+    nav {
+      background-color: #ffeaa7;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-size: 1.1rem;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #fab1a0;
+      color: white;
+    }
+
+    .main-content {
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #fff9c4;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 2px 4px 10px rgba(0,0,0,0.1);
+      transition: 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background-color: #fce38a;
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>📚 My Magical Digital Magazine</header>
+
+<div class="container">
+  <nav>
+    <a href="#">🏠 Home</a>
+    <a href="#">📖 Articles</a>
+    <a href="#">🧠 Games & Puzzles</a>
+    <a href="#">🧚‍♀️ Magic Corner</a>
+    <a href="#">📅 Monthly Themes</a>
+    <a href="#">📝 Submit a Story</a>
+    <a href="#">👤 My Profile</a>
+    <a href="#">📊 Analytics</a>
+  </nav>
+
+  <div class="main-content">
+    <h2>Welcome Back, Nithu! 🌟</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h2>New Articles</h2>
+        <p>View the latest fairy tales, science fun, and kid-friendly stories!</p>
+      </div>
+      <div class="card">
+        <h2>Magic Game of the Month</h2>
+        <p>Solve Auri's enchanted puzzle to unlock a digital badge! 🐟</p>
+      </div>
+      <div class="card">
+        <h2>Submit Your Story</h2>
+        <p>Send us your tales, poems or drawings – we’ll publish your magic!</p>
+      </div>
+      <div class="card">
+        <h2>Analytics</h2>
+        <p>Check how many readers enjoyed your magical world 🌈</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

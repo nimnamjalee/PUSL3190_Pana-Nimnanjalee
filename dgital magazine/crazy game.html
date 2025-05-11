@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crazy Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .game-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ff1493;
+    }
+
+    #question {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      border: none;
+      background-color: #20b2aa;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2e8b57;
+    }
+
+    .answer-btn {
+      display: block;
+      background: #eee;
+      border: 2px solid #ccc;
+      margin: 0.5rem auto;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 80%;
+    }
+
+    .answer-btn:hover {
+      background-color: #dcdcdc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #result {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4b0082;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .button-row .btn {
+      width: 45%;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🎉 Crazy Quiz Game 🎉</h1>
+    <div id="quiz-box">
+      <h2 id="question">Loading...</h2>
+      <div id="answers"></div>
+      <div class="button-row">
+        <button class="btn" id="back-btn">⬅ Back</button>
+        <button class="btn" id="next-btn">Next ➡</button>
+      </div>
+    </div>
+    <div id="result" class="hidden">
+      <p id="score-text"></p>
+      <div class="button-row">
+        <button class="btn" onclick="location.href='game.html'">Back to Menu</button>
+        <button class="btn" onclick="restartQuiz()">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      { q: "What color is the sky?", a: ["Blue", "Green", "Pink", "Orange"], c: "Blue" },
+      { q: "What sound does a dog make?", a: ["Meow", "Moo", "Woof", "Quack"], c: "Woof" },
+      { q: "How many legs does a spider have?", a: ["6", "8", "10", "12"], c: "8" },
+      { q: "What comes after 5?", a: ["6", "7", "8", "9"], c: "6" },
+      { q: "Which animal is the king of the jungle?", a: ["Tiger", "Lion", "Elephant", "Zebra"], c: "Lion" },
+      { q: "What color is a banana?", a: ["Red", "Blue", "Yellow", "Purple"], c: "Yellow" },
+      { q: "Which one can fly?", a: ["Fish", "Horse", "Bird", "Dog"], c: "Bird" },
+      { q: "What's 2 + 2?", a: ["3", "4", "5", "6"], c: "4" },
+      { q: "Which is a fruit?", a: ["Carrot", "Potato", "Apple", "Onion"], c: "Apple" },
+      { q: "Which is used to write?", a: ["Fork", "Pen", "Spoon", "Brush"], c: "Pen" },
+      { q: "What shape is a ball?", a: ["Square", "Triangle", "Circle", "Rectangle"], c: "Circle" },
+      { q: "How many fingers on one hand?", a: ["3", "4", "5", "6"], c: "5" },
+      { q: "Which one is a vehicle?", a: ["Tree", "Car", "Shoes", "Book"], c: "Car" },
+      { q: "Which one is a color?", a: ["Chair", "Blue", "Table", "Cat"], c: "Blue" },
+      { q: "What do we drink?", a: ["Paper", "Milk", "Shoe", "Stone"], c: "Milk" }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const nextBtn = document.getElementById("next-btn");
+    const backBtn = document.getElementById("back-btn");
+    const resultEl = document.getElementById("result");
+    const quizBox = document.getElementById("quiz-box");
+    const scoreText = document.getElementById("score-text");
+
+    function showQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.q;
+      answersEl.innerHTML = "";
+
+      q.a.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.textContent = answer;
+        btn.classList.add("answer-btn");
+        btn.addEventListener("click", () => selectAnswer(answer, btn));
+        answersEl.appendChild(btn);
+      });
+
+      nextBtn.style.display = "none";
+    }
+
+    function selectAnswer(answer, btn) {
+      const correct = quizData[currentQuestion].c;
+      if (answer === correct) score++;
+
+      document.querySelectorAll(".answer-btn").forEach(b => {
+        b.disabled = true;
+        if (b.textContent === correct) {
+          b.style.backgroundColor = "#90ee90"; // green
+        } else if (b === btn) {
+          b.style.backgroundColor = "#ffcccb"; // red
+        }
+      });
+
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    backBtn.addEventListener("click", () => {
+      if (currentQuestion === 0) {
+        window.location.href = "game.html";
+      } else {
+        currentQuestion--;
+        score = Math.max(score - 1, 0); // Remove previous score guess
+        showQuestion();
+      }
+    });
+
+    function showResult() {
+      quizBox.style.display = "none";
+      resultEl.classList.remove("hidden");
+
+      if (score >= 10) {
+        scoreText.textContent = `🎉 You Win! Score: ${score}/15`;
+      } else {
+        scoreText.textContent = `😢 Game Over! Score: ${score}/15`;
+      }
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      resultEl.classList.add("hidden");
+      quizBox.style.display = "block";
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>අකුරු හඳුනාගන්න</title>
+  <style>
+    body {
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      background-color: #fff8dc;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .game-container {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #8a2be2;
+    }
+
+    #letter {
+      font-size: 4rem;
+      margin: 1rem 0;
+      color: #ff4500;
+    }
+
+    .options {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .option-btn {
+      background-color: #ffe4b5;
+      border: 2px solid #deb887;
+      padding: 1rem;
+      font-size: 1.2rem;
+      border-radius: 15px;
+      cursor: pointer;
+      width: 150px;
+    }
+
+    .option-btn:hover {
+      background-color: #ffdead;
+    }
+
+    .button-row {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #20b2aa;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2e8b57;
+    }
+
+    #score-box {
+      font-size: 1.5rem;
+      color: #2f4f4f;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>අකුරු හඳුනාගන්න 🎈</h1>
+    <div id="quiz-box">
+      <div id="letter">අ</div>
+      <div class="options" id="options"></div>
+      <div class="button-row">
+        <button class="btn" id="back-btn">⬅ ආපසු</button>
+      </div>
+    </div>
+
+    <div id="score-box" class="hidden">
+      <p id="result-text"></p>
+      <div class="button-row">
+        <button class="btn" onclick="location.href='game.html'">📘 මුලට</button>
+        <button class="btn" onclick="restartGame()">🔁 නැවත ක්‍රීඩා කරන්න</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { letter: "අ", correct: "අහස", options: ["අහස", "ඇතා", "උඳු"] },
+      { letter: "ක", correct: "කටා", options: ["කටා", "තෙලි"] },
+      { letter: "ග", correct: "ගස්", options: ["ගස්", "මල්", "දඩයම"] },
+      { letter: "ච", correct: "චන්ද්‍රයා", options: ["චන්ද්‍රයා", "පහන්", "නවය"] },
+      { letter: "ට", correct: "ටෙන්ටුවා", options: ["ටෙන්ටුවා", "බල්ලා", "ජලය"] }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const letterEl = document.getElementById("letter");
+    const optionsEl = document.getElementById("options");
+    const quizBox = document.getElementById("quiz-box");
+    const scoreBox = document.getElementById("score-box");
+    const resultText = document.getElementById("result-text");
+    const backBtn = document.getElementById("back-btn");
+
+    function showQuestion() {
+      const q = questions[current];
+      letterEl.textContent = q.letter;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.classList.add("option-btn");
+        btn.addEventListener("click", () => checkAnswer(option));
+        optionsEl.appendChild(btn);
+      });
+
+      backBtn.onclick = () => {
+        if (current === 0) {
+          window.location.href = "game.html";
+        } else {
+          current--;
+          score = Math.max(score - 1, 0);
+          showQuestion();
+        }
+      };
+    }
+
+    function checkAnswer(selected) {
+      const correct = questions[current].correct;
+      if (selected === correct) {
+        score++;
+      }
+
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizBox.classList.add("hidden");
+      scoreBox.classList.remove("hidden");
+
+      if (score >= 4) {
+        resultText.textContent = `🎉 ඔබ ජයග්‍රහණය කළාය! ලකුණු: ${score}/5`;
+      } else {
+        resultText.textContent = `😢 ඔබ අසාර්ථක විය. ලකුණු: ${score}/5`;
+      }
+    }
+
+    function restartGame() {
+      current = 0;
+      score = 0;
+      scoreBox.classList.add("hidden");
+      quizBox.classList.remove("hidden");
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

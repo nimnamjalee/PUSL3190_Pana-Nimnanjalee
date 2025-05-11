@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tortoise and the Hare - Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .story-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .story-content p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="story-container">
+        <h1>The Tortoise and the Hare</h1>
+        <div class="story-content">
+            <p id="story-text">Once upon a time, there was a rabbit and a tortoise...</p>
+        </div>
+        <button id="next-btn" onclick="nextStory()">Next</button>
+    </div>
+
+    <script>
+        let storyIndex = 0;
+        const storyText = [
+            "Once upon a time, there was a rabbit and a tortoise. The rabbit was very fast, and the tortoise was very slow.",
+            "One day, the rabbit boasted about how fast he was and challenged the tortoise to a race.",
+            "The tortoise, being slow but steady, agreed to the challenge. The race began, and the rabbit sprinted ahead.",
+            "After a short time, the rabbit felt so confident he decided to take a nap.",
+            "Meanwhile, the tortoise kept going slowly but steadily, never stopping or losing hope.",
+            "When the rabbit woke up, he saw the tortoise almost at the finish line. He ran as fast as he could, but it was too late!",
+            "The tortoise won the race! The moral of the story is: 'Slow and steady wins the race.'"
+        ];
+
+        function nextStory() {
+            if (storyIndex < storyText.length) {
+                document.getElementById("story-text").textContent = storyText[storyIndex];
+                speakText(storyText[storyIndex]);
+                storyIndex++;
+            } else {
+                document.getElementById("next-btn").textContent = "The End";
+                document.getElementById("next-btn").disabled = true;
+            }
+        }
+
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            speech.lang = "en-US";  // You can change to another language if desired
+            speech.volume = 1;  // Volume: 0 to 1
+            speech.rate = 0.9;  // Slower rate for a dreamy effect
+            speech.pitch = 1.5;  // Higher pitch for a fairy-like voice
+
+            // Load voices and select a female one
+            const voices = window.speechSynthesis.getVoices();
+            
+            // You can change this line to select a specific voice by its name
+            const femaleVoice = voices.find(voice => voice.name.toLowerCase().includes('female'));
+            
+            // If no female voice is found, we default to the first available voice
+            if (femaleVoice) {
+                speech.voice = femaleVoice;
+            } else {
+                speech.voice = voices[0];  // Use the first available voice
+            }
+
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Ensure voices are loaded before speaking
+        window.speechSynthesis.onvoiceschanged = function() {
+            const voices = window.speechSynthesis.getVoices();
+            console.log(voices);  // Check the available voices in the console
+        }
+    </script>
+</body>
+</html>

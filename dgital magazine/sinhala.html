@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>සිංහල කතාව - The Tortoise and the Hare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .story-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .story-content p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="story-container">
+        <h1>සිංහල කතාව - ඉවුරු හා කොටි</h1>
+        <div class="story-content">
+            <p id="story-text">එක් දිනක, ඉවුරු සහ කොටි සිටියේය...</p>
+        </div>
+        <button id="next-btn" onclick="nextStory()">ඊළඟ</button>
+    </div>
+
+    <script>
+        let storyIndex = 0;
+        const storyText = [
+            "එක් දිනක, ඉවුරු සහ කොටි සිටියේය. ඉවුරු ඉක්මනින් ඉදිරියට පටවූ අතර කොටි සෑම විටම පසුවී තිබුනි.",
+            "ඉවුරු තම ඉක්මනෙහි පූර්ව ආදරය සහිතව, කොටිට වාදයක් ලබා දුන්නා.",
+            "කොටි, ස්ථාවරව සහ සහනශීලීව, සටනේ පිටවීමට එකඟ වුණා. තරඟය ආරම්භ විය, ඉවුරු ඉස්සර කරන ලද සියලු කාර්යයන් ඉක්මවා ගියේය.",
+            "කෙටි කාලයක් පසු, ඉවුරු මනෝෂිකව නිශ්චල වී, නිදා සිටියේය.",
+            "එසේම, කොටි සෑම විටම ඉදිරියට පටවී, නතර නොවී ඉදිරියට පවා ගියා.",
+            "ඉවුරු නැවත නැවත උදා, කොටි මාර්ගයේ අවසන් තරඟයට ආවේ.",
+            "කොටි තරඟය ජය ගත්තා! කතාවේ පණිවිඩයයි: 'සුළු සහ ස්ථාවරව ඉදිරියට යාම සාර්ථක වේ.'"
+        ];
+
+        function nextStory() {
+            if (storyIndex < storyText.length) {
+                document.getElementById("story-text").textContent = storyText[storyIndex];
+                speakText(storyText[storyIndex]);
+                storyIndex++;
+            } else {
+                document.getElementById("next-btn").textContent = "අවසන්";
+                document.getElementById("next-btn").disabled = true;
+            }
+        }
+
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance();
+            speech.text = text;
+            speech.lang = "si-LK";  // Sinhala Language Code for Sri Lanka
+            speech.volume = 1;  // Volume: 0 to 1
+            speech.rate = 1;  // Normal rate
+            speech.pitch = 1;  // Normal pitch
+
+            // Load voices and select a Sinhala voice (if available)
+            const voices = window.speechSynthesis.getVoices();
+            
+            // Search for Sinhala voice in the list of voices
+            const sinhalaVoice = voices.find(voice => voice.lang === "si-LK");
+
+            // If Sinhala voice is found, use it
+            if (sinhalaVoice) {
+                speech.voice = sinhalaVoice;
+            } else {
+                console.log("සිංහල හඬක් ලබාගත නොහැක.");
+                speech.voice = voices[0];  // Use the first available voice (default voice)
+            }
+
+            window.speechSynthesis.speak(speech);
+        }
+
+        // Ensure voices are loaded before speaking
+        window.speechSynthesis.onvoiceschanged = function() {
+            const voices = window.speechSynthesis.getVoices();
+            console.log(voices);  // Check the available voices in the console
+        }
+    </script>
+</body>
+</html>

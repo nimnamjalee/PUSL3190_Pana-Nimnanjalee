@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Match the Items</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #fefce8;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .game {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      margin-top: 40px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin: 0 50px;
+    }
+
+    .item {
+      width: 80px;
+      height: 80px;
+      margin: 20px 0;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .item img {
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+    }
+
+    canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+    }
+
+    .selected {
+      border-color: #f59e0b;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Match the Items</h1>
+
+  <div class="game" id="game-area">
+    <div class="column" id="left-column">
+      <div class="item" data-id="flower"><img src="https://i.imgur.com/x2uTFNm.png" alt="Flower" /></div>
+      <div class="item" data-id="duck"><img src="https://i.imgur.com/4iRbsYb.png" alt="Duck" /></div>
+      <div class="item" data-id="icecream"><img src="https://i.imgur.com/dVJck3h.png" alt="Ice Cream" /></div>
+    </div>
+
+    <canvas id="line-canvas" width="800" height="600"></canvas>
+
+    <div class="column" id="right-column">
+      <div class="item" data-id="icecream"><img src="https://i.imgur.com/dVJck3h.png" alt="Ice Cream" /></div>
+      <div class="item" data-id="flower"><img src="https://i.imgur.com/x2uTFNm.png" alt="Flower" /></div>
+      <div class="item" data-id="duck"><img src="https://i.imgur.com/4iRbsYb.png" alt="Duck" /></div>
+    </div>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const leftItems = document.querySelectorAll('#left-column .item');
+    const rightItems = document.querySelectorAll('#right-column .item');
+    const canvas = document.getElementById('line-canvas');
+    const ctx = canvas.getContext('2d');
+    let selectedLeft = null;
+    const matches = [];
+
+    function getCenter(el) {
+      const rect = el.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2 + window.scrollX,
+        y: rect.top + rect.height / 2 + window.scrollY,
+      };
+    }
+
+    function drawLine(fromEl, toEl) {
+      const from = getCenter(fromEl);
+      const to = getCenter(toEl);
+      const canvasRect = canvas.getBoundingClientRect();
+
+      ctx.beginPath();
+      ctx.moveTo(from.x - canvasRect.left, from.y - canvasRect.top);
+      ctx.lineTo(to.x - canvasRect.left, to.y - canvasRect.top);
+      ctx.strokeStyle = "#f97316";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    leftItems.forEach(item => {
+      item.addEventListener('click', () => {
+        leftItems.forEach(i => i.classList.remove('selected'));
+        selectedLeft = item;
+        item.classList.add('selected');
+      });
+    });
+
+    rightItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (selectedLeft) {
+          drawLine(selectedLeft, item);
+          matches.push({
+            left: selectedLeft.getAttribute('data-id'),
+            right: item.getAttribute('data-id')
+          });
+          selectedLeft.classList.remove('selected');
+          selectedLeft = null;
+
+          if (matches.length === 3) {
+            checkResult();
+          }
+        }
+      });
+    });
+
+    function checkResult() {
+      let correct = 0;
+      matches.forEach(match => {
+        if (match.left === match.right) correct++;
+      });
+
+      const result = document.getElementById('result');
+      if (correct === 3) {
+        result.textContent = '🎉 Yay! All matches are correct!';
+      } else {
+        result.textContent = `❌ You got ${correct}/3 correct. Try again!`;
+      }
+    }
+  </script>
+</body>
+</html>

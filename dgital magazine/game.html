@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Magazine - Game Select</title>
+  <style>
+    @font-face {
+      font-family: 'CuteFont';
+      src: url('CuteFont.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'CuteFont', cursive, sans-serif;
+      background: linear-gradient(to right, #fdf2f8, #e0f2fe);
+    }
+
+    header {
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      color: #ec4899;
+      font-size: 2rem;
+    }
+
+    nav a {
+      margin-left: 1rem;
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ec4899;
+    }
+
+    h2 {
+      text-align: center;
+      color: #db2777;
+      font-size: 2.5rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      padding: 0 2rem 4rem;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      border: 2px solid #ec4899;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      color: #1e3a8a;
+      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.3);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-card img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1rem;
+    }
+
+    .game-card h3 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Magical Me 🌠</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Categories</a>
+      <a href="#">Games</a>
+      <a href="#">Stories</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <h2>🎮 Select a Game</h2>
+
+ <div class="game-board">
+  <a href="game1.html" style="text-decoration: none;">
+    <div class="game-card">
+      <img src="puz.jpeg" alt="Puzzle Game">
+      <h3>Puzzle Fun</h3>
+    </div>
+  </a>
+
+  <a href="game2.html" style="text-decoration: none;">
+    <div class="game-card">
+      <img src="quiz.jpeg" alt="Quiz Game">
+      <h3>Crazy Quiz</h3>
+    </div>
+  </a>
+
+  <a href="game3.html" style="text-decoration: none;">
+    <div class="game-card">
+      <img src="mem.jpeg" alt="Memory Game">
+      <h3>Memory Match</h3>
+    </div>
+  </a>
+
+  <a href="magicdraw.html" style="text-decoration: none;">
+    <div class="game-card">
+      <img src="magic draw.jpeg" alt="Drawing Game">
+      <h3>Magic Draw</h3>
+    </div>
+  </a>
+</div>
+
+
+</body>
+</html>

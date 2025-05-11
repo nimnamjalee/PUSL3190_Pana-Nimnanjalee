@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>සිංදු පිටුව 🎶</title>
+  <style>
+    body {
+      background-color: #fdf6e3;
+      font-family: 'Noto Sans Sinhala', sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #ff69b4;
+      font-size: 2rem;
+    }
+
+    img {
+      width: 200px;
+      margin-top: 1rem;
+    }
+
+    .controls {
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 0.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .play-btn { background-color: #4caf50; }
+    .pause-btn { background-color: #ffa500; }
+    .stop-btn { background-color: #f44336; }
+    .back-btn { background-color: #6a5acd; }
+    .lang-btn { background-color: #008b8b; }
+
+    select {
+      margin-top: 1rem;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+
+    audio {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn lang-btn" onclick="toggleLanguage()">
+    භාෂාව / Language
+  </button>
+
+  <h1 id="song-title">🎵 සිංදු එකක් අහල බලමු!</h1>
+  <img src=song.jpeg alt="Music Icon">
+
+  <div>
+    <select id="songSelector" onchange="changeSong()">
+      <option value="songs/song1.mp3">ඇට කොළ සිංදුව</option>
+      <option value="songs/song2.mp3">දෙවෙනි සිංදුව</option>
+      <option value="songs/song3.mp3">තුන්වෙනි සිංදුව</option>
+    </select>
+  </div>
+
+  <div class="controls">
+    <button class="btn play-btn" id="playBtn" onclick="playSong()">▶️ වාදනය කරන්න</button>
+    <button class="btn pause-btn" id="pauseBtn" onclick="pauseSong()">⏸️ නවතන්න</button>
+    <button class="btn stop-btn" id="stopBtn" onclick="stopSong()">⏹️ නවතා ආරම්භ කරන්න</button>
+  </div>
+
+  <audio id="sinhalaSong" src="songs/song1.mp3"></audio>
+
+  <div class="controls">
+    <button class="btn back-btn" id="backBtn" onclick="goBack()">⬅️ ආපසු යන්න</button>
+  </div>
+
+  <script>
+    const song = document.getElementById("sinhalaSong");
+
+    function playSong() {
+      song.play();
+    }
+
+    function pauseSong() {
+      song.pause();
+    }
+
+    function stopSong() {
+      song.pause();
+      song.currentTime = 0;
+    }
+
+    function goBack() {
+      window.location.href = "game.html";
+    }
+
+    function changeSong() {
+      const selector = document.getElementById("songSelector");
+      song.src = selector.value;
+      song.play(); // auto-play new selection
+    }
+
+    let currentLang = "si";
+
+    function toggleLanguage() {
+      const songSelector = document.getElementById("songSelector");
+
+      if (currentLang === "si") {
+        document.getElementById("song-title").innerText = "🎵 Let's Listen to a Song!";
+        document.getElementById("playBtn").innerText = "▶️ Play";
+        document.getElementById("pauseBtn").innerText = "⏸️ Pause";
+        document.getElementById("stopBtn").innerText = "⏹️ Stop";
+        document.getElementById("backBtn").innerText = "⬅️ Back to Game";
+
+        songSelector.options[0].text = "Song One";
+        songSelector.options[1].text = "Song Two";
+        songSelector.options[2].text = "Song Three";
+
+        currentLang = "en";
+      } else {
+        document.getElementById("song-title").innerText = "🎵 සිංදු එකක් අහල බලමු!";
+        document.getElementById("playBtn").innerText = "▶️ වාදනය කරන්න";
+        document.getElementById("pauseBtn").innerText = "⏸️ නවතන්න";
+        document.getElementById("stopBtn").innerText = "⏹️ නවතා ආරම්භ කරන්න";
+        document.getElementById("backBtn").innerText = "⬅️ ආපසු යන්න";
+
+        songSelector.options[0].text = "ඇට කොළ සිංදුව";
+        songSelector.options[1].text = "දෙවෙනි සිංදුව";
+        songSelector.options[2].text = "තුන්වෙනි සිංදුව";
+
+        currentLang = "si";
+      }
+    }
+  </script>
+
+</body>
+</html>

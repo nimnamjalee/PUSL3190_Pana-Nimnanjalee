@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memory Match Game</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to right, #fde68a, #fcd34d);
+      text-align: center;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #b91c1c;
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin: 2rem auto;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-size: 2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card.flipped {
+      background-color: #34d399;
+      color: white;
+    }
+
+    #scoreboard {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+
+    #next-level, #back-button {
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #next-level {
+      background-color: #10b981;
+      color: white;
+      display: none;
+    }
+
+    #back-button {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 1rem;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Memory Match Game</h1>
+<div id="scoreboard">Level 1</div>
+<div id="game-board"></div>
+<button id="next-level">Go to Level 2</button>
+<button id="back-button">Back</button>
+<div id="message"></div>
+
+<script>
+const levelConfigs = [
+    { level: 1, pairs: 4, triesAllowed: 10 },
+    { level: 2, pairs: 6, triesAllowed: 14 }
+  ];
+
+  let currentLevel = 0;
+  let cards = [];
+  let flipped = [];
+  let matched = 0;
+  let tries = 0;
+  let scores = [];
+
+  const board = document.getElementById('game-board');
+  const nextLevelBtn = document.getElementById('next-level');
+  const backButton = document.getElementById('back-button');
+  const scoreboard = document.getElementById('scoreboard');
+  const message = document.getElementById('message');
+
+  const tryAgainBtn = document.createElement('button');
+  tryAgainBtn.textContent = "Try Again";
+  tryAgainBtn.style.marginTop = '1rem';
+  tryAgainBtn.style.padding = '0.5rem 1.5rem';
+  tryAgainBtn.style.fontSize = '1rem';
+  tryAgainBtn.style.borderRadius = '8px';
+  tryAgainBtn.style.backgroundColor = '#3b82f6';
+  tryAgainBtn.style.color = 'white';
+  tryAgainBtn.style.border = 'none';
+  tryAgainBtn.style.cursor = 'pointer';
+  tryAgainBtn.style.display = 'none';
+  tryAgainBtn.addEventListener('click', () => startLevel(currentLevel));
+  document.body.appendChild(tryAgainBtn);
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function startLevel(levelIndex) {
+    board.innerHTML = '';
+    flipped = [];
+    matched = 0;
+    tries = 0;
+    message.textContent = '';
+    tryAgainBtn.style.display = 'none';
+    currentLevel = levelIndex;
+
+    const config = levelConfigs[levelIndex];
+    scoreboard.textContent = `Level ${config.level} | Tries Left: ${config.triesAllowed}`;
+    nextLevelBtn.style.display = 'none';
+
+    let values = [];
+    for (let i = 1; i <= config.pairs; i++) {
+      values.push(i, i);
+    }
+
+    cards = shuffle(values).map((val, index) => {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.dataset.value = val;
+      card.dataset.index = index;
+      card.addEventListener('click', handleFlip);
+      board.appendChild(card);
+      return card;
+    });
+
+    board.style.gridTemplateColumns = `repeat(${config.pairs <= 4 ? 4 : 6}, 100px)`;
+  }
+
+  function handleFlip(e) {
+    const card = e.target;
+
+    if (flipped.length === 2 || card.classList.contains('flipped')) return;
+
+    card.textContent = card.dataset.value;
+    card.classList.add('flipped');
+    flipped.push(card);
+
+    if (flipped.length === 2) {
+      tries++;
+      const [a, b] = flipped;
+      if (a.dataset.value === b.dataset.value) {
+        matched += 1;
+        flipped = [];
+
+        if (matched === levelConfigs[currentLevel].pairs) {
+          const score = levelConfigs[currentLevel].triesAllowed - tries;
+          scores[currentLevel] = score;
+          message.textContent = `🎉 You finished Level ${currentLevel + 1} with score: ${score}`;
+          if (currentLevel + 1 < levelConfigs.length) {
+            nextLevelBtn.style.display = 'inline-block';
+          } else {
+            message.textContent += `\n🏆 Final Scores: Level 1 : ${scores[0]}, Level 2 : ${scores[1]}`;
+          }
+        }
+      } else {
+        setTimeout(() => {
+          a.classList.remove('flipped');
+          b.classList.remove('flipped');
+          a.textContent = '';
+          b.textContent = '';
+          flipped = [];
+        }, 1000);
+      }
+
+      const triesLeft = levelConfigs[currentLevel].triesAllowed - tries;
+      scoreboard.textContent = `Level ${levelConfigs[currentLevel].level} | Tries Left: ${triesLeft}`;
+
+      if (triesLeft <= 0 && matched < levelConfigs[currentLevel].pairs) {
+        message.textContent = "💔 Game Over! You didn't complete this level.";
+        cards.forEach(card => card.removeEventListener('click', handleFlip));
+        tryAgainBtn.style.display = 'inline-block';
+      }
+    }
+  }
+
+  nextLevelBtn.addEventListener('click', () => {
+    startLevel(currentLevel + 1);
+  });
+
+  backButton.addEventListener('click', () => {
+    if (currentLevel === 0) {
+      window.location.href = 'game.html';
+    } else {
+      startLevel(0);
+    }
+  });
+
+  startLevel(0);
+</script>
+
+</body>
+</html>

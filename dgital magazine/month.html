@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Month Board</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #f0f9ff;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #2d3436;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px #dfe6e9;
+    }
+
+    .months {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .month {
+      background-color: #ffeaa7;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .month:hover {
+      transform: scale(1.05);
+      background-color: #fab1a0;
+    }
+
+    .month span {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🗓️ Month Board</h1>
+
+  <div class="months">
+    <div class="month"><span>❄️</span>January</div>
+    <div class="month"><span>💖</span>February</div>
+    <div class="month"><span>🌸</span>March</div>
+    <div class="month"><span>🌼</span>April</div>
+    <div class="month"><span>🌿</span>May</div>
+    <div class="month"><span>☀️</span>June</div>
+    <div class="month"><span>🏖️</span>July</div>
+    <div class="month"><span>🍉</span>August</div>
+    <div class="month"><span>🍂</span>September</div>
+    <div class="month"><span>🎃</span>October</div>
+    <div class="month"><span>🍁</span>November</div>
+    <div class="month"><span>🎄</span>December</div>
+  </div>
+
+</body>
+</html>

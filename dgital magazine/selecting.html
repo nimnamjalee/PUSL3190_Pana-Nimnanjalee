@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Animal Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff7e6;
+      text-align: center;
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #ff9800;
+    }
+
+    .question {
+      font-size: 1.2em;
+      margin: 20px 0;
+    }
+
+    .options button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      border: none;
+      background-color: #ffcc80;
+      color: #333;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .options button:hover {
+      background-color: #ffa726;
+    }
+
+    #feedback {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    #score-section {
+      margin-top: 30px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Animal Quiz Game 🐾</h1>
+    <div class="question" id="question">Loading...</div>
+    <div class="options" id="options"></div>
+    <div id="feedback"></div>
+    <div id="score-section"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "Which one is a lion?",
+        options: ["🐘", "🦓", "🦁", "🐒"],
+        answer: "🦁"
+      },
+      {
+        question: "Which one lives in water?",
+        options: ["🐶", "🐬", "🐔", "🐘"],
+        answer: "🐬"
+      },
+      {
+        question: "Which is used to fly?",
+        options: ["🐦", "🐴", "🐍", "🐷"],
+        answer: "🐦"
+      },
+      {
+        question: "Which one is the tallest?",
+        options: ["🦒", "🐕", "🐄", "🦘"],
+        answer: "🦒"
+      },
+      {
+        question: "Which one gives us eggs?",
+        options: ["🐔", "🐸", "🦁", "🐍"],
+        answer: "🐔"
+      },
+      {
+        question: "Which one is not real?",
+        options: ["🦄", "🐱", "🐭", "🐢"],
+        answer: "🦄"
+      },
+      {
+        question: "Which one has a trunk?",
+        options: ["🐘", "🐻", "🐩", "🐈"],
+        answer: "🐘"
+      },
+      {
+        question: "Which animal barks?",
+        options: ["🐕", "🐎", "🐮", "🐑"],
+        answer: "🐕"
+      },
+      {
+        question: "Which animal goes 'meow'?",
+        options: ["🐶", "🐱", "🐭", "🐷"],
+        answer: "🐱"
+      },
+      {
+        question: "Which is the fastest on land?",
+        options: ["🐢", "🐘", "🐆", "🐓"],
+        answer: "🐆"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const scoreEl = document.getElementById("score-section");
+
+    function loadQuestion() {
+      feedbackEl.textContent = '';
+      const q = quizData[currentQuestion];
+      questionEl.textContent = `Q${currentQuestion + 1}: ${q.question}`;
+      optionsEl.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const correct = quizData[currentQuestion].answer;
+      if (selected === correct) {
+        feedbackEl.textContent = "✅ Correct!";
+        score++;
+      } else {
+        feedbackEl.textContent = "❌ Wrong!";
+      }
+
+      currentQuestion++;
+
+      setTimeout(() => {
+        if (currentQuestion < quizData.length) {
+          loadQuestion();
+        } else {
+          showScore();
+        }
+      }, 1000);
+    }
+
+    function showScore() {
+      questionEl.style.display = 'none';
+      optionsEl.style.display = 'none';
+      feedbackEl.style.display = 'none';
+      scoreEl.innerHTML = `🎉 Your score is ${score} out of ${quizData.length}`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

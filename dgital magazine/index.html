@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KiddyMag - Home</title>
+  <style>
+    @font-face {
+      font-family: 'CuteFont';
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'CuteFont', cursive, sans-serif;
+      background: linear-gradient(to bottom right, #ffe4e6, #dbeafe);
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      color: #ec4899;
+      font-size: 2rem;
+    }
+
+    nav a {
+      margin-left: 1rem;
+      color: #3b82f6;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ec4899;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .hero h2 {
+      color: #db2777;
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      color: #2563eb;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .image-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .blur-bg {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, #fcd34d88, #f472b688);
+      filter: blur(40px);
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .hero img {
+      position: relative;
+      z-index: 1;
+      width: 300px;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .hero button {
+      margin-top: 2rem;
+      padding: 0.75rem 2rem;
+      background-color: #ec4899;
+      color: white;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .hero button:hover {
+      background-color: #db2777;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .features {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .feature-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+
+    .feature-box:hover {
+      transform: scale(1.05);
+    }
+
+    .feature-box h3 {
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      background: white;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+   /* Soap foam animation */
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-200px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.soap-foam {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  animation: rise 4s ease-in infinite;
+  background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  box-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.bubble:nth-child(1) {
+  left: 0;
+  background: radial-gradient(circle, rgba(255,182,143,0.5), rgba(255,255,255,0));
+  width: 22px;
+  height: 22px;
+}
+
+.bubble:nth-child(2) {
+  left: 30px;
+  background: radial-gradient(circle, rgba(173,216,230,0.5), rgba(255,255,255,0));
+  width: 15px;
+  height: 15px;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(3) {
+  left: -30px;
+  background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,255,255,0));
+  width: 25px;
+  height: 25px;
+  animation-delay: 2s;
+}
+
+    
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Magical Me 🌠</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Categories</a>
+      <a href="game.html">Games</a>
+      <a href="#">Stories</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Magical Me 🌠</h2>
+    <p>Where fun, learning, and stories come to life ✨</p>
+    <div class="image-container">
+      <div class="blur-bg"></div>
+      <img src="download (4).jpeg" alt="Cartoon Kids Reading" />
+    </div>
+    <br />
+    <button>Explore Now</button>
+  </section>
+
+  <section class="features">
+    <div class="feature-box">
+      <h3>This Week's Story</h3>
+      <p>Dive into a magical forest with friendly creatures and a surprise treasure!</p>
+    </div>
+    <div class="feature-box">
+      <h3>Fun Facts</h3>
+      <p>Did you know octopuses have three hearts? 🐙 Let’s learn more crazy facts!</p>
+    </div>
+    <div class="feature-box">
+      <h3>Mini Games</h3>
+      <p>Play brain-boosting games designed just for kids like you!</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2025 Magical Me 🌠. Made with ❤️ by Nithu</p>
+  </footer>
+
+  <!-- Soap Foam Bubbles -->
+  <div class="soap-foam">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+
+  <!-- Magical Sparkle Icon -->
+  <div class="magic-icon">✨</div>
+</body>
+</html>

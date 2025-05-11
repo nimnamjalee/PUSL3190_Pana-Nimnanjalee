@@ -1,0 +1,59 @@
+# Story Teller with Voice Selection
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Teller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Story Teller</h1>
+    <select id="voiceSelect"></select>
+    <br>
+    <textarea id="story" rows="10" cols="50" placeholder="Type your story here..."></textarea>
+    <br>
+    <button id="speakButton">Speak</button>
+
+    <script>
+        const synth = window.speechSynthesis;
+        let voices = [];
+
+        function populateVoiceList() {
+            voices = synth.getVoices();
+            const voiceSelect = document.getElementById('voiceSelect');
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        populateVoiceList();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = populateVoiceList;
+        }
+
+        document.getElementById('speakButton').addEventListener('click', () => {
+            const storyText = document.getElementById('story').value;
+            const utterance = new SpeechSynthesisUtterance(storyText);
+            const selectedVoice = voices[document.getElementById('voiceSelect').value];
+            utterance.voice = selectedVoice;
+            synth.speak(utterance);
+        });
+    </script>
+</body>
+</html>

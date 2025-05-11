@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sliding Puzzle Game (3x3)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+      background: #f8f8f8;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .puzzle-wrapper {
+      position: relative;
+      width: 484px; /* 3 tiles * 160px + 2px*2 gaps */
+      height: 484px;
+    }
+
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 160px);
+      grid-template-rows: repeat(3, 160px);
+      gap: 2px;
+      border: 4px solid #444;
+    }
+
+    .tile {
+      width: 160px;
+      height: 160px;
+      background-image: url("song.jpeg");
+      background-size: 480px 480px;
+      box-sizing: border-box;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      transition: transform 0.2s;
+    }
+
+    .blank {
+      background: #eee;
+      border: none;
+      cursor: default;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      display: none;
+      text-align: center;
+      border: 4px solid #44f;
+    }
+
+    .overlay h1 {
+      font-size: 32px;
+      color: green;
+      margin-bottom: 20px;
+    }
+
+    .overlay button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .overlay button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎵 Sliding Puzzle Game (3x3)</h2>
+
+  <div class="puzzle-wrapper">
+    <div id="puzzle"></div>
+
+    <!-- Winner Overlay -->
+    <div id="winner-overlay" class="overlay">
+      <h1>🎉 You Are the Winner! 🎉</h1>
+      <button onclick="location.href='next.html'">➡️ Next Level</button>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button id="back-btn" onclick="location.href='game.html'">⬅️ Back</button>
+    <button id="reset-btn">Shuffle</button>
+  </div>
+
+  <script>
+    const puzzle = document.getElementById('puzzle');
+    const resetBtn = document.getElementById('reset-btn');
+    const overlay = document.getElementById('winner-overlay');
+    let tiles = [];
+    let shuffleCount = 0;
+
+    function createTiles() {
+      tiles = [];
+      for (let i = 0; i < 8; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.dataset.index = i;
+        const row = Math.floor(i / 3);
+        const col = i % 3;
+        tile.style.backgroundPosition = `-${col * 160}px -${row * 160}px`;
+        tiles.push(tile);
+      }
+
+      const blank = document.createElement('div');
+      blank.className = 'tile blank';
+      tiles.push(blank);
+    }
+
+    function shuffleTiles() {
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+    }
+
+    function renderTiles() {
+      puzzle.innerHTML = '';
+      tiles.forEach(tile => puzzle.appendChild(tile));
+    }
+
+    function getBlankIndex() {
+      return tiles.findIndex(tile => tile.classList.contains('blank'));
+    }
+
+    function isAdjacent(index1, index2) {
+      const row1 = Math.floor(index1 / 3);
+      const col1 = index1 % 3;
+      const row2 = Math.floor(index2 / 3);
+      const col2 = index2 % 3;
+      return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
+    }
+
+    function isSolved() {
+      for (let i = 0; i < 8; i++) {
+        if (tiles[i].dataset.index != i) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function showWinnerOverlay() {
+      overlay.style.display = 'flex';
+    }
+
+    function enableClicking() {
+      tiles.forEach((tile, i) => {
+        tile.onclick = () => {
+          const blankIndex = getBlankIndex();
+          if (isAdjacent(i, blankIndex)) {
+            [tiles[i], tiles[blankIndex]] = [tiles[blankIndex], tiles[i]];
+            renderTiles();
+            enableClicking();
+            if (isSolved()) {
+              showWinnerOverlay();
+            }
+          }
+        };
+      });
+    }
+
+    function solvePuzzle() {
+      let solvedState = [];
+      for (let i = 0; i < 8; i++) {
+        solvedState[i] = tiles[i];
+      }
+      solvedState.push(tiles[8]);  // blank
+      tiles = solvedState;
+
+      tiles.forEach((tile, index) => {
+        if (!tile.classList.contains('blank')) {
+          const row = Math.floor(index / 3);
+          const col = index % 3;
+          tile.style.backgroundPosition = `-${col * 160}px -${row * 160}px`;
+        }
+      });
+
+      renderTiles();
+      showWinnerOverlay();
+    }
+
+    resetBtn.onclick = () => {
+      shuffleCount++;
+      if (shuffleCount < 10) {
+        shuffleTiles();
+        renderTiles();
+        enableClicking();
+        overlay.style.display = 'none';
+      } else {
+        solvePuzzle();
+      }
+    };
+
+    createTiles();
+    shuffleTiles();
+    renderTiles();
+    enableClicking();
+  </script>
+
+</body>
+</html>

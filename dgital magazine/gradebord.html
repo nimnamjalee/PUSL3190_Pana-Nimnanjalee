@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grade Board</title>
+  <style>
+    body {
+      background: #fdf6e3;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #333;
+      text-shadow: 1px 1px #aaa;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .grade {
+      background-color: #fffae6;
+      border: 3px dashed #f1c40f;
+      padding: 15px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+
+    .grade:hover {
+      background-color: #ffeaa7;
+      transform: scale(1.05);
+    }
+
+    .grade.special {
+      background-color: #dff9fb;
+      border-color: #00cec9;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎓 Select Your Grade</h1>
+  <div class="board">
+    <div class="grade special">Pre-School</div>
+    <div class="grade">Grade 1</div>
+    <div class="grade">Grade 2</div>
+    <div class="grade">Grade 3</div>
+    <div class="grade">Grade 4</div>
+    <div class="grade">Grade 5</div>
+    <div class="grade">Grade 6</div>
+    <div class="grade">Grade 7</div>
+    <div class="grade">Grade 8</div>
+    <div class="grade">Grade 9</div>
+    <div class="grade">Grade 10</div>
+    <div class="grade">Grade 11</div>
+    <div class="grade special">A/L</div>
+  </div>
+
+</body>
+</html>
